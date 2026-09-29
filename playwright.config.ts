@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv'
 
 dotenv.config();
+const ATTACH_SCREENSHOTS = process.env.ATTACH_SCREENSHOTS?.toLowerCase() === 'true';
 
 function resolveBaseURL(): string {
   if (process.env.BASE_URL) return process.env.BASE_URL;
@@ -27,7 +28,7 @@ function resolveBaseURL(): string {
 }
 
 export default defineConfig({
-  testDir: './src/tests',
+  testDir: './tests',
   timeout: 60_000,
   expect: {
     timeout: 10_000
@@ -41,20 +42,29 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['list'],
+    // ['./src/utils/CustomReporters.ts'],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: process.env.BASE_URL,
-    screenshot: 'only-on-failure',
+    headless: false,
+    screenshot: ATTACH_SCREENSHOTS ? 'only-on-failure' : 'off',
     video: 'on',
-    trace: 'on-first-retry',
+    trace: 'on'
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1920, height: 1080 }
+      }
+
     }
 
     // {

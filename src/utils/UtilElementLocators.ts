@@ -6,7 +6,7 @@
  **/
 
 import { expect, Locator, Page } from '@playwright/test';
-import { createLogger, type Logger } from '@utils/logger';
+import { createLogger, type Logger } from './logger';
 
 
 export const DEFAULT_ACTION_TIMEOUT_MS = 15_000;

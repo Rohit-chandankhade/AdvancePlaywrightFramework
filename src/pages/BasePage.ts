@@ -11,14 +11,21 @@
  * base class deliberately does NOT pre-build any locators.
  */
 import { Page } from '@playwright/test'
+import { UtilElementLocator } from '../utils/UtilElementLocators';
+import { createLogger, type Logger } from '../utils/logger';
 
-abstract class BasePage {
+export abstract class BasePage {
 
 
     protected readonly page: Page;
+    protected readonly el: UtilElementLocator;
+    protected readonly log: Logger;
 
-    constructor(page: Page) {
+
+    constructor(page: Page, scope: string) {
         this.page = page
+        this.el = new UtilElementLocator(page, scope);
+        this.log = createLogger(scope);
     }
 
     // Why do we need this?
